@@ -18,16 +18,40 @@
  */
 package org.apache.axis.war;
 
-import static org.junit.Assert.assertNotNull;
+import static com.google.common.truth.Truth.assertThat;
 
-public final class Utils {
-  private static String URL_PROPERTY = "test.functional.webapp.url";
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
-  private Utils() {}
+import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 
-  public static String getWebappUrl() {
-    String url = System.getProperty(URL_PROPERTY);
-    assertNotNull(URL_PROPERTY + " not set", url);
-    return url;
-  }
+public class XssTest {
+    /**
+     * Tests for potential XSS vulnerability in the Version service.
+     * <p>
+     * The Version service returns a body with whatever namespace URI was used in the request. If
+     * the namespace URI is not properly encoded in the response, then this creates a potential
+     * XSS vulnerability.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void testGetVersion() throws Exception {
+        HttpURLConnection conn = (HttpURLConnection)new URL(Utils.getWebappUrl() + "/services/Version").openConnection();
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+        conn.setRequestProperty("SOAPAction", "");
+        conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
+        InputStream payload = XssTest.class.getResourceAsStream("getVersion-xss.xml");
+        OutputStream out = conn.getOutputStream();
+        IOUtils.copy(payload, out);
+        payload.close();
+        out.close();
+        assertThat(conn.getResponseCode()).isEqualTo(200);
+        InputStream in = conn.getInputStream();
+        assertThat(IOUtils.toString(in, "UTF-8")).doesNotContain("<script");
+    }
 }
