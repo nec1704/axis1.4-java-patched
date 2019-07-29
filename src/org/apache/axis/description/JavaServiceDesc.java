@@ -524,16 +524,19 @@ public class JavaServiceDesc implements ServiceDesc {
         // with more parameters than supplied in the request (with missing parameters
         // defaulted to null) when a perfectly good method exists with exactly the
         // supplied parameters.
-        Collections.sort(overloads,
-            new Comparator() {
-                public int compare(Object o1, Object o2)
-                {
-                    Method meth1 = ((OperationDesc)o1).getMethod();
-                    Method meth2 = ((OperationDesc)o2).getMethod();
-                    return (meth1.getParameterTypes().length -
-                                         meth2.getParameterTypes().length);
-                }
-            });
+        synchronized (overloads)
+        {
+            Collections.sort(overloads,
+                new Comparator() {
+                    public int compare(Object o1, Object o2)
+                    {
+                        Method meth1 = ((OperationDesc)o1).getMethod();
+                        Method meth2 = ((OperationDesc)o2).getMethod();
+                        return (meth1.getParameterTypes().length -
+                                             meth2.getParameterTypes().length);
+                    }
+                });
+        }
 
         OperationDesc [] array = new OperationDesc [overloads.size()];
         return (OperationDesc[])overloads.toArray(array);
