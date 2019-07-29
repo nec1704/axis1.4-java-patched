@@ -1,3 +1,4 @@
 language: java
-install: ant deps
+os: linux
+jdk: oraclejdk8
 script: ant junit compile
