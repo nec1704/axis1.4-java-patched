@@ -1,4 +1,4 @@
 language: java
-os: linux
+dist: trusty
 jdk: oraclejdk8
 script: ant junit compile
