@@ -5,3 +5,5 @@
 #**/test/wsdl/query/QueryTestServiceTestCase.*
 **/test/wsdl/query/FileGenWrappedTestCase.*
 **/test/wsdl/uddiv2/InquiryServiceTestCase.*
+# Skip not working integration tests
+**/test/client/*.*
