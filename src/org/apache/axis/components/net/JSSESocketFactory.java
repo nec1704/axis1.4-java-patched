@@ -15,6 +15,12 @@
  */
 package org.apache.axis.components.net;
 
+import org.apache.axis.utils.Messages;
+import org.apache.axis.utils.XMLUtils;
+import org.apache.axis.utils.StringUtils;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +41,21 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
+import org.apache.axis.utils.Messages;
+import org.apache.axis.utils.StringUtils;
+import org.apache.axis.utils.XMLUtils;
+
+import javax.naming.InvalidNameException;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
@@ -273,7 +294,7 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
         // I'm okay with being case-insensitive when comparing the host we used
         // to establish the socket to the hostname in the certificate.
         // Don't trim the CN, though.
-        
+
 		String cn = getCN(cert);
 		String[] subjectAlts = getDNSSubjectAlts(cert);
 		verifyHostName(host, cn.toLowerCase(Locale.US), subjectAlts);
@@ -323,7 +344,7 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 	 * @throws SSLException
 	 */
 
-	private static void verifyHostName(final String host, String cn, String[] subjectAlts)throws SSLException{
+	private static void verifyHostName(final String host, String cns, String[] subjectAlts)throws SSLException{
 		StringBuffer cnTested = new StringBuffer();
 
 		for (int i = 0; i < subjectAlts.length; i++){
@@ -336,12 +357,18 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 				cnTested.append("/").append(name);
 			}				
 		}
-		if (cn != null && verifyHostName(host, cn)){
-			return;
-		}
-		cnTested.append("/").append(cn);
-		throw new SSLException("hostname in certificate didn't match: <"
-					+ host + "> != <" + cnTested + ">");
+        for (int i = 0; i < cns.length; i++) {
+            String cn = cns[i];
+            if (cn != null) {
+                cn = cn.toLowerCase(Locale.US);
+                if (verifyHostName(host, cn)) {
+                    return;
+                }
+                cnTested.append("/").append(cn);
+            }
+        }
+        throw new SSLException("hostname in certificate didn't match: <"
+                + host + "> != <" + cnTested + ">");
 		
 	}		
 	
@@ -435,7 +462,7 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 	}
 
 
-	private static String getCN(X509Certificate cert) {
+	private static String getCNs(X509Certificate cert) {
           // Note:  toString() seems to do a better job than getName()
           //
           // For example, getName() gives me this:
@@ -445,20 +472,34 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
           // EMAILADDRESS=juliusdavies@cucbc.com        
 		String subjectPrincipal = cert.getSubjectX500Principal().toString();
 		
-		return getCN(subjectPrincipal);
+		return getCNs(subjectPrincipal);
 
 	}
-	private static String getCN(String subjectPrincipal) {
-		StringTokenizer st = new StringTokenizer(subjectPrincipal, ",");
-		while(st.hasMoreTokens()) {
-			String tok = st.nextToken().trim();
-			if (tok.length() > 3) {
-				if (tok.substring(0, 3).equalsIgnoreCase("CN=")) {
-					return tok.substring(3);
-				}
-			}
-		}
-		return null;
+	private static String getCNs(String subjectPrincipal) {
+        if (subjectPrincipal == null) {
+            return null;
+        }
+        final List cns = new ArrayList();
+        try {
+            final LdapName subjectDN = new LdapName(subjectPrincipal);
+            final List rdns = subjectDN.getRdns();
+            for (int i = rdns.size() - 1; i >= 0; i--) {
+                final Rdn rds = (Rdn) rdns.get(i);
+                final Attributes attributes = rds.toAttributes();
+                final Attribute cn = attributes.get("cn");
+                if (cn != null) {
+                    try {
+                        final Object value = cn.get();
+                        if (value != null) {
+                            cns.add(value.toString());
+                        }
+                    }
+                    catch (NamingException ignore) {}
+                }
+            }
+        }
+        catch (InvalidNameException ignore) { }
+        return cns.isEmpty() ? null : (String[]) cns.toArray(new String[ cns.size() ]);
 	}
 
 }
