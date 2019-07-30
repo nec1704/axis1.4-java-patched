@@ -31,6 +31,7 @@ import java.net.Socket;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -60,11 +61,6 @@ import javax.net.ssl.SSLException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
-
-import org.apache.axis.utils.Messages;
-import org.apache.axis.utils.StringUtils;
-import org.apache.axis.utils.XMLUtils;
-
 
 /**
  * SSL socket factory. It _requires_ a valid RSA key and
@@ -295,9 +291,9 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
         // to establish the socket to the hostname in the certificate.
         // Don't trim the CN, though.
 
-		String cn = getCN(cert);
+		String cns = getCNs(cert);
 		String[] subjectAlts = getDNSSubjectAlts(cert);
-		verifyHostName(host, cn.toLowerCase(Locale.US), subjectAlts);
+		verifyHostName(host, cns, subjectAlts);
 
 	}
 
@@ -403,8 +399,8 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 	private static boolean isIPAddress(final String hostname) {
 		return hostname != null
 				&& (
-						IPV4_PATTERN.matcher(hostname).matches()
-						|| IPV6_STD_PATTERN.matcher(hostname).matches() 
+				IPV4_PATTERN.matcher(hostname).matches()
+						|| IPV6_STD_PATTERN.matcher(hostname).matches()
 						|| IPV6_HEX_COMPRESSED_PATTERN.matcher(hostname).matches()
 		);
 
@@ -436,9 +432,9 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 			// e.g. server
 			String prefix =  firstpart.substring(0, firstpart.length() - 1);
 			// skipwildcard part from cn
-			String suffix = cn.substring(firstpart.length()); 
+			String suffix = cn.substring(firstpart.length());
 			// skip wildcard part from host
-			String hostSuffix = hostName.substring(prefix.length());			
+			String hostSuffix = hostName.substring(prefix.length());
 			match = hostName.startsWith(prefix) && hostSuffix.endsWith(suffix);
 		} else {
 			match = hostName.endsWith(cn.substring(1));
