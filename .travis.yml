@@ -1,4 +1,4 @@
 language: java
 dist: trusty
 jdk: oraclejdk8
-script: ant junit compile; cat test-reports/*.xml
+script: ant junit compile; ant_exit_code=$?; cat test-reports/*.xml; exit "$ant_exit_code"
