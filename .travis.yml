@@ -13,4 +13,5 @@ deploy:
   skip_cleanup: true
   on:
     repo: nec1704/axis1.4-java-patched
-    branch: release
+    branch: master
+    tags: true
