@@ -1,7 +1,7 @@
 language: java
 dist: trusty
 jdk: oraclejdk8
-script: ant junit compile
+script: ant junit compile || (ant_exit_code=$?; cat test-reports/*.xml; exit "$ant_exit_code")
 deploy:
   provider: releases
   api_key:
