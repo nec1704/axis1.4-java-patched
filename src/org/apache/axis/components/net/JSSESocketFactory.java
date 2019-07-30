@@ -291,7 +291,7 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
         // to establish the socket to the hostname in the certificate.
         // Don't trim the CN, though.
 
-		String cns = getCNs(cert);
+		String[] cns = getCNs(cert);
 		String[] subjectAlts = getDNSSubjectAlts(cert);
 		verifyHostName(host, cns, subjectAlts);
 
@@ -340,7 +340,7 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 	 * @throws SSLException
 	 */
 
-	private static void verifyHostName(final String host, String cns, String[] subjectAlts)throws SSLException{
+	private static void verifyHostName(final String host, String[] cns, String[] subjectAlts)throws SSLException{
 		StringBuffer cnTested = new StringBuffer();
 
 		for (int i = 0; i < subjectAlts.length; i++){
@@ -353,7 +353,7 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 				cnTested.append("/").append(name);
 			}				
 		}
-        for (int i = 0; i < cns.length(); i++) {
+        for (int i = 0; i < cns.length; i++) {
             String cn = cns[i];
             if (cn != null) {
                 cn = cn.toLowerCase(Locale.US);
@@ -458,7 +458,7 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 	}
 
 
-	private static String getCNs(X509Certificate cert) {
+	private static String[] getCNs(X509Certificate cert) {
           // Note:  toString() seems to do a better job than getName()
           //
           // For example, getName() gives me this:
@@ -471,7 +471,7 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 		return getCNs(subjectPrincipal);
 
 	}
-	private static String getCNs(String subjectPrincipal) {
+	private static String[] getCNs(String subjectPrincipal) {
         if (subjectPrincipal == null) {
             return null;
         }
