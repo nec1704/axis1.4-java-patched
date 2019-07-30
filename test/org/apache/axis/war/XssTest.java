@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package org.apache.axis.war;
+package test.org.apache.axis.war;
 
 import static com.google.common.truth.Truth.assertThat;
 
