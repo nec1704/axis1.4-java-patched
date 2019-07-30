@@ -106,9 +106,8 @@ Copyright:
     <fileset dir="${tools.dir}"
       includes="*-tasks.properties"/>
     <fileset dir="${tools.dir}" includes="org/**/*.xml"/>
-    <fileset dir="${tools.dir}" file="log4j.properties"/>
   </copy>
-  
+
   <tstamp/>
   <jar jarfile="${build.lib}/axis-ant.jar" >
     <fileset dir="${tools.build.dir}"

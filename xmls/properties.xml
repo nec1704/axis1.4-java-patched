@@ -62,6 +62,7 @@
 <property name="xalan.jar" location="${test.dir}/lib/xalan-2.6.0.jar"/>
 <property name="regexp.jar" location="${test.dir}/lib/jakarta-oro-2.0.5.jar"/>
 <property name="xmlunit.jar" location="${test.dir}/lib/xmlunit1.0.jar"/>
+<property name="commons-io.jar" location="${test.dir}/lib/commons-io-2.4.jar"/>
 
 <!-- pull this in from the compiler -->
 <property name="tools.jar" location="${java.home}/../lib/tools.jar"/>
