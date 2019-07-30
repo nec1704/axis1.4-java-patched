@@ -1,4 +1,4 @@
 language: java
 dist: trusty
 jdk: oraclejdk8
-script: ant junit compile
+script: ant junit compile &&

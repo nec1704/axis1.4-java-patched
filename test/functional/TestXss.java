@@ -16,19 +16,17 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package test.org.apache.axis.war;
+package test.functional;
 
-import static com.google.common.truth.Truth.assertThat;
+import junit.framework.TestCase;
+import org.apache.commons.io.IOUtils;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.apache.commons.io.IOUtils;
-import org.junit.Test;
-
-public class XssTest {
+public class TestXss extends TestCase {
     /**
      * Tests for potential XSS vulnerability in the Version service.
      * <p>
@@ -38,20 +36,21 @@ public class XssTest {
      * 
      * @throws Exception
      */
-    @Test
     public void testGetVersion() throws Exception {
         HttpURLConnection conn = (HttpURLConnection)new URL(Utils.getWebappUrl() + "/services/Version").openConnection();
         conn.setDoInput(true);
         conn.setDoOutput(true);
         conn.setRequestProperty("SOAPAction", "");
         conn.setRequestProperty("Content-Type", "text/xml;charset=UTF-8");
-        InputStream payload = XssTest.class.getResourceAsStream("getVersion-xss.xml");
+        InputStream payload = TestXss.class.getResourceAsStream("getVersion-xss.xml");
         OutputStream out = conn.getOutputStream();
         IOUtils.copy(payload, out);
         payload.close();
         out.close();
-        assertThat(conn.getResponseCode()).isEqualTo(200);
+        assertEquals(conn.getResponseCode(), 200);
         InputStream in = conn.getInputStream();
-        assertThat(IOUtils.toString(in, "UTF-8")).doesNotContain("<script");
+        String result = IOUtils.toString(in, "UTF-8");
+        assertNotNull(result);
+        assertTrue(!result.contains("<script"));
     }
 }

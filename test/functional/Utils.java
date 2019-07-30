@@ -16,9 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-package test.org.apache.axis.war;
+package test.functional;
 
-import static org.junit.Assert.assertNotNull;
+import junit.framework.Assert;
 
 public final class Utils {
   private static String URL_PROPERTY = "test.functional.webapp.url";
@@ -27,7 +27,7 @@ public final class Utils {
 
   public static String getWebappUrl() {
     String url = System.getProperty(URL_PROPERTY);
-    assertNotNull(URL_PROPERTY + " not set", url);
+    Assert.assertNotNull(URL_PROPERTY + " not set", url);
     return url;
   }
 }
