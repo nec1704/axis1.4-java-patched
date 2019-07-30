@@ -10,6 +10,8 @@ Axis is licensed under the Apache License 2.0. See the files called LICENSE and 
 
 This repo is a fork of Axis 1.4 with the latest svn changes and security fixes.
 
+Builds on oraclejdk8 
+
 Security fixes
 
 * [CVE-2012-5784](https://nvd.nist.gov/vuln/detail/CVE-2012-5784)
