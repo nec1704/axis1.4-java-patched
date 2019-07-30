@@ -1,4 +1,16 @@
 language: java
 dist: trusty
 jdk: oraclejdk8
-script: ant junit compile
+script: ant junit compile || (ant_exit_code=$?; cat test-reports/*.xml; exit "$ant_exit_code")
+deploy:
+  provider: releases
+  api_key:
+    secure: HYlXau+4hWN1xRXNVvWqeXKN6lDrKPPr/iuHcdTOFHEi93nHX4zjT7xi8UREXrFFE6QteG0URpwfjhr4TIkzMUyiHwVVHchac9Uae/z8simRJvoIHQ5KBNdssZNA1P5KJVBp+71NML6xI++jL8TZOb9huJSWFo4WYJWELuSj4/FvcMwwF6Z5HBPwbCwL/I6ynoeJl7Nlinpid2/0fZyY7/LTbRM0E+2S7U41ukiAs+0yHXwinLWRfi+7BJxkZJbfrGZsUz0slvksAX+pDwdGILDZP27iBpk57huERjGUKgdTXwmSy2Vvf4F61YMcuxEmd+lK6n3jVhUXIt4U7SSURfBMUCUewtgd/+K0X75nwBHJHJXYNk4bcBn2dqOhWZk+vNjnTwoOsfLVJ0unKE9fEtTyY6Xn+LyydzaisixlXvDOnck03GWd7GPQYovmd+JdA7AyduYYVg5w/N8HGZ5iy8wQkw0rD2sOQEEaNbUQAs0PhDXbtFwbGsO8HVZKdSz15GJBg67DIBSf9tlH/tQFMerBn3rhWD6EtE13MiKXILnBPA2cX6V8h/GP1TEpPZBtfKEoLnBn0CvgVAtPxxG6Gi8U6teQ5blBrJx1XstyCtEXISVg1dHpEPyN8Li7qLyApFg3bu+Kj3ptDlE1ZFkhLun6hWSTgIEXKXPTbrQjXWE=
+  file:
+    - "build/lib/axis.jar"
+    - "build/lib/jaxrpc.jar"
+    - "build/lib/saaj.jar"
+  skip_cleanup: true
+  on:
+    repo: nec1704/axis1.4-java-patched
+    branch: release
