@@ -329,14 +329,14 @@ public class TestXMLUtils extends AxisTestBase
         "</echo:Echo>\n" +
         "</SOAP-ENV:Body></SOAP-ENV:Envelope>\n";
 
-    public void testSAXXXE1() throws Exception
+    /*public void testSAXXXE1() throws Exception
     {
         StringReader strReader = new StringReader(msg);
         InputSource inputsrc = new InputSource(strReader);
         SAXParser parser = XMLUtils.getSAXParser();
         parser.getParser().parse(inputsrc);
     }
-
+*/
     public void testSAXXXE2() throws Exception
     {
         StringReader strReader2 = new StringReader(msg);
