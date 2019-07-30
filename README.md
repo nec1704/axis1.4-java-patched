@@ -1,4 +1,4 @@
-# Axis (Apache eXtensible Interaction System) [![Build Status](https://travis-ci.org/nec1704/axis1.4-java-patched.svg?branch=develop)](https://travis-ci.org/nec1704/axis1.4-java-patched)
+# Axis (Apache eXtensible Interaction System) [![Build Status](https://travis-ci.org/nec1704/axis1.4-java-patched.svg?branch=master)](https://travis-ci.org/nec1704/axis1.4-java-patched)
 
 Welcome to Axis!  You'll find documentation in the docs/ directory.
 
@@ -9,6 +9,8 @@ Axis is licensed under the Apache License 2.0. See the files called LICENSE and 
 # About this repo
 
 This repo is a fork of Axis 1.4 with the latest svn changes and security fixes.
+
+Builds on oraclejdk8 
 
 Security fixes
 
