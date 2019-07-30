@@ -413,6 +413,7 @@ Copyright:
       <fileset dir="${lib.dir}">
         <include name="*.jar"/>
         <exclude name="*servlet*.jar"/>
+        <exclude name="*.jws"/>
       </fileset>
       <fileset dir="${build.lib}">
         <include name="*.jar"/>
