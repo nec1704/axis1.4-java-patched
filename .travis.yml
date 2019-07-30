@@ -9,6 +9,8 @@ deploy:
   file:
     - "build/lib/axis.jar"
     - "build/lib/jaxrpc.jar"
+    - "build/lib/saaj.jar"
+  skip_cleanup: true
   on:
     repo: nec1704/axis1.4-java-patched
     branch: release
