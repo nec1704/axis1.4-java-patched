@@ -7,3 +7,4 @@
 **/test/wsdl/uddiv2/InquiryServiceTestCase.*
 # Skip not working integration tests
 **/test/client/*.*
+**/test/utils/TestXMLUtils.testSAXXXE1
