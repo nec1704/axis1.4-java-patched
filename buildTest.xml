@@ -108,6 +108,13 @@ Copyright:
     <available file="${axis.home}/junit-exclude-tests.txt" property="junit-exclude-tests.present"/>
     <junit printsummary="yes" haltonfailure="${test.functional.fail}" fork="yes">
       <jvmarg value="-Xbootclasspath:${sun.boot.class.path}"/>
+        <!-- Axis doesn't contain META-INF/services/* files for SAAJ. Instead, the SAAJ API
+                                 library provided by Axis uses the Axis SAAJ implementation by default. That's an issue on Java 1.6
+                                 because the SAAJ API provided by the JRE will be used. Therefore we need to set this system property
+                                 to execute the SAAJ unit tests on Java 1.6. -->
+        <sysproperty key="javax.xml.soap.MessageFactory" value="org.apache.axis.soap.MessageFactoryImpl" />
+        <sysproperty key="javax.xml.soap.SOAPFactory" value="org.apache.axis.soap.SOAPFactoryImpl" />
+        <sysproperty key="javax.xml.soap.SOAPConnectionFactory" value="org.apache.axis.soap.SOAPConnectionFactoryImpl" />
       <classpath refid="classpath" />
       <formatter type="xml" />
       <batchtest todir="${test.functional.reportdir}">
