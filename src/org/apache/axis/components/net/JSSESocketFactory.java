@@ -353,7 +353,7 @@ public class JSSESocketFactory extends DefaultSocketFactory implements SecureSoc
 				cnTested.append("/").append(name);
 			}				
 		}
-        for (int i = 0; i < cns.length; i++) {
+        for (int i = 0; i < cns.length(); i++) {
             String cn = cns[i];
             if (cn != null) {
                 cn = cn.toLowerCase(Locale.US);
